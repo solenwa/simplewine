@@ -3,12 +3,12 @@ const pool = new Pool({
   user: "me",
   host: "localhost",
   database: "simplewine",
-  password: env.password,
+  password: process.env.password,
   port: 5432,
 });
 
 const getProducts = (request, response) => {
-  pool.query("SELECT * FROM prodects ORDER BY id ASC", (error, results) => {
+  pool.query("SELECT * FROM products ORDER BY id ASC", (error, results) => {
     if (error) {
       throw error;
     }
