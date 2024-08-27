@@ -1,15 +1,19 @@
-const dbProducts = require("./productQueries");
+const express = require('express');
+const app = express();
 
-// API Endpoints for wine products
-app.get("/products", dbProducts.getProducts);
-app.get("/products/:id", dbProducts.getProductById);
-app.post("/products", dbProducts.createProduct);
-app.put("/products/:id", dbProducts.updateProduct);
-app.delete("/products/:id", dbProducts.deleteProduct);
+const loaders = require('./loaders');
 
-//
-app.use('/api/users', require('./routes/userRoutes'));
+const { PORT } = require('./config');
 
-app.listen(port, () => {
-  console.log(`App running on port ${port}.`);
-});
+async function startServer() {
+
+  // Init application loaders
+  loaders(app);
+
+  // Start server
+  app.listen(PORT, () => {
+    console.log(`Server listening on PORT ${PORT}`);
+  })
+}
+
+startServer();

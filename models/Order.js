@@ -1,21 +1,20 @@
-const db = require('../db');
-const moment = require('moment');
-const pgp = require('pg-promise')({ capSQL: true });
-const OrderItem = require('./orderItem');
+const db = require("../database");
+const moment = require("moment");
+const pgp = require("pg-promise")({ capSQL: true });
+const OrderItem = require("./OrderItem");
 
 module.exports = class OrderModel {
-
   constructor(data = {}) {
     this.created = data.created || moment.utc().toISOString();
     this.items = data.items || [];
     this.modified = moment.utc().toISOString();
-    this.status = data.status || 'PENDING';
+    this.status = data.status || "PENDING";
     this.total = data.total || 0;
     this.userId = data.userId || null;
   }
 
   addItems(items) {
-    this.items = items.map(item => new OrderItem(item));
+    this.items = items.map((item) => new OrderItem(item));
   }
 
   /**
@@ -24,17 +23,16 @@ module.exports = class OrderModel {
    */
   async create() {
     try {
-
       const { items, ...order } = this;
 
       // Generate SQL statement - using helper for dynamic parameter injection
-      const statement = pgp.helpers.insert(order, null, 'orders') + ' RETURNING *';
+      const statement =
+        pgp.helpers.insert(order, null, "orders") + " RETURNING *";
 
       // Execute SQL statment
       const result = await db.query(statement);
 
       if (result.rows?.length) {
-
         // Add new information generated in the database (ie: id) to the Order instance properties
         Object.assign(this, result.rows[0]);
 
@@ -42,8 +40,7 @@ module.exports = class OrderModel {
       }
 
       return null;
-
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -56,11 +53,12 @@ module.exports = class OrderModel {
    */
   async update(data) {
     try {
-
       // Generate SQL statement - using helper for dynamic parameter injection
-      const condition = pgp.as.format('WHERE id = ${id} RETURNING *', { id: this.id });
-      const statement = pgp.helpers.update(data, null, 'orders') + condition;
-  
+      const condition = pgp.as.format("WHERE id = ${id} RETURNING *", {
+        id: this.id,
+      });
+      const statement = pgp.helpers.update(data, null, "orders") + condition;
+
       // Execute SQL statment
       const result = await db.query(statement);
 
@@ -69,8 +67,7 @@ module.exports = class OrderModel {
       }
 
       return null;
-
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -82,13 +79,12 @@ module.exports = class OrderModel {
    */
   static async findByUser(userId) {
     try {
-
       // Generate SQL statement
       const statement = `SELECT *
                          FROM orders
                          WHERE "userId" = $1`;
       const values = [userId];
-  
+
       // Execute SQL statment
       const result = await db.query(statement, values);
 
@@ -97,8 +93,7 @@ module.exports = class OrderModel {
       }
 
       return null;
-
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -110,13 +105,12 @@ module.exports = class OrderModel {
    */
   static async findById(orderId) {
     try {
-
       // Generate SQL statement
       const statement = `SELECT *
                          FROM orders
                          WHERE id = $1`;
       const values = [orderId];
-  
+
       // Execute SQL statment
       const result = await db.query(statement, values);
 
@@ -125,10 +119,8 @@ module.exports = class OrderModel {
       }
 
       return null;
-
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
-
-}
+};

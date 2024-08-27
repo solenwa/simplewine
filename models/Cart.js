@@ -1,4 +1,4 @@
-const db = require("../db");
+const db = require("../database");
 const moment = require("moment");
 const pgp = require("pg-promise")({ capSQL: true });
 

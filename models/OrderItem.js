@@ -1,9 +1,8 @@
-const db = require('../db');
-const moment = require('moment');
-const pgp = require('pg-promise')({ capSQL: true });
+const db = require("../database");
+const moment = require("moment");
+const pgp = require("pg-promise")({ capSQL: true });
 
 module.exports = class OrderItemModel {
-
   constructor(data = {}) {
     this.created = data.created || moment.utc().toISOString();
     this.description = data.description;
@@ -22,10 +21,10 @@ module.exports = class OrderItemModel {
    */
   static async create(data) {
     try {
-
       // Generate SQL statement - using helper for dynamic parameter injection
-      const statement = pgp.helpers.insert(data, null, 'orderItems') + 'RETURNING *';
- 
+      const statement =
+        pgp.helpers.insert(data, null, "orderItems") + "RETURNING *";
+
       // Execute SQL statment
       const result = await db.query(statement);
 
@@ -34,8 +33,7 @@ module.exports = class OrderItemModel {
       }
 
       return null;
-
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -47,7 +45,6 @@ module.exports = class OrderItemModel {
    */
   static async find(orderId) {
     try {
-
       // Generate SQL statement
       const statement = `SELECT 
                             oi.qty,
@@ -55,9 +52,9 @@ module.exports = class OrderItemModel {
                             p.*
                          FROM "orderItems" oi
                          INNER JOIN products p ON p.id = oi."productId"
-                         WHERE "orderId" = $1`
+                         WHERE "orderId" = $1`;
       const values = [orderId];
-  
+
       // Execute SQL statment
       const result = await db.query(statement, values);
 
@@ -66,10 +63,8 @@ module.exports = class OrderItemModel {
       }
 
       return [];
-
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
-
-}
+};
