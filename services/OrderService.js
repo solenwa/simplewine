@@ -1,25 +1,21 @@
-const createError = require('http-errors');
-const OrderModel = require('../models/order');
-const OrderItemModel = require('../models/orderItem');
+const createError = require("http-errors");
+const OrderModel = require("../models/Order");
+const OrderItemModel = require("../models/OrderItem");
 
 module.exports = class OrderService {
-
   async create(data) {
     const { userId } = data;
 
     try {
-
       // Instantiate new order and save
       const Order = new OrderModel();
       const order = await Order.create({ userId, total });
 
       return cart;
-
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
-
-  };
+  }
 
   async list(userId) {
     try {
@@ -27,8 +23,7 @@ module.exports = class OrderService {
       const orders = await OrderModel.findByUser(userId);
 
       return orders;
-
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
   }
@@ -39,10 +34,8 @@ module.exports = class OrderService {
       const order = await OrderModel.findById(orderId);
 
       return order;
-
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
   }
-
-}
+};

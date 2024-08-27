@@ -1,11 +1,9 @@
-const createError = require('http-errors');
-const UserModel = require('../models/user');
+const createError = require("http-errors");
+const UserModel = require("../models/User");
 const UserModelInstance = new UserModel();
 
 module.exports = class AuthService {
-
   async register(data) {
-
     const { email } = data;
 
     try {
@@ -14,20 +12,17 @@ module.exports = class AuthService {
 
       // If user already exists, reject
       if (user) {
-        throw createError(409, 'Email already in use');
+        throw createError(409, "Email already in use");
       }
 
       // User doesn't exist, create new user record
       return await UserModelInstance.create(data);
-
-    } catch(err) {
+    } catch (err) {
       throw createError(500, err);
     }
-
-  };
+  }
 
   async login(data) {
-
     const { email, password } = data;
 
     try {
@@ -36,20 +31,17 @@ module.exports = class AuthService {
 
       // If no user found, reject
       if (!user) {
-        throw createError(401, 'Incorrect username or password');
+        throw createError(401, "Incorrect username or password");
       }
 
       // Check for matching passwords
       if (user.password !== password) {
-        throw createError(401, 'Incorrect username or password');
+        throw createError(401, "Incorrect username or password");
       }
 
       return user;
-
-    } catch(err) {
+    } catch (err) {
       throw createError(500, err);
     }
-
-  };
-
-}
+  }
+};
