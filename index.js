@@ -1,24 +1,4 @@
-require("dotenv").config();
-
-const express = require("express");
-const bodyParser = require("body-parser");
-const app = express();
-const dbProducts = require("./database/productQueries");
-const port = 3000;
-var cors = require("cors");
-
-app.use(cors());
-
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
-
-app.get("/", (request, response) => {
-  response.json({ info: "Node.js, Express, and Postgres API" });
-});
+const dbProducts = require("./productQueries");
 
 // API Endpoints for wine products
 app.get("/products", dbProducts.getProducts);

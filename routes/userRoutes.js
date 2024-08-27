@@ -1,15 +1,35 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const {
-  registerUser,
-  loginUser,
-  getLoggedInUser,
-} = require("../controllers/userController");
+const UserService = require('../services/UserService');
 
-const { protect } = require("../middleware/authMiddleware");
+const UserServiceInstance = new UserService();
 
-router.post("/", registerUser);
-router.post("/login", loginUser);
-router.get("/me", protect, getLoggedInUser);
+module.exports = (app) => {
 
-module.exports = router;
+  app.use('/users', router);
+
+  router.get('/:userId', async (req, res, next) => {
+
+    try {
+      const { userId } = req.params;
+    
+      const response = await UserServiceInstance.get({ id: userId });
+      res.status(200).send(response);
+    } catch(err) {
+      next(err);
+    }
+  });
+
+  router.put('/:userId', async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const data = req.body;
+
+      const response = await UserServiceInstance.update({ id: userId, ...data });
+      res.status(200).send(response);
+    } catch(err) {
+      next(err);
+    }
+  });
+
+}
